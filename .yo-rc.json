@@ -1,0 +1,9 @@
+{
+  "generator-react-webpack": {
+    "appName": "block-map",
+    "style": "scss",
+    "cssmodules": false,
+    "postcss": false,
+    "generatedWithVersion": 4
+  }
+}
