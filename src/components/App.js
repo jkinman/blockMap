@@ -174,7 +174,6 @@ class AppComponent extends React.Component {
             .error(console.error)            
         }
         this.setState({blockNumber: data})
-        console.log( this.state.blockArray)
     })
     .error(console.error)    
   }
