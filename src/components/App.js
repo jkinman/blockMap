@@ -29,6 +29,18 @@ const BlockPixel = props => {
   )
 }
 
+const Block = props => {
+
+  return(
+    <div className="block" key={props.index}>
+      <h1>{`Block Number: ${props.block.number}`}</h1>
+      <h2>{props.block.hash}</h2>
+      <img src={props.block.image} className="blockImage" alt={`Block Number: ${props.block.number}`}/>
+    </div>
+    )
+
+}
+
 const BlockSvgPixel = props => {
   let lineLength = Math.round(Math.sqrt(props.block.bitmap.length))
 
@@ -131,6 +143,8 @@ class AppComponent extends React.Component {
     canvas.width = dimentions * SCALE
     canvas.height = dimentions * SCALE
     let ctx = canvas.getContext('2d');
+    ctx.width = dimentions * SCALE
+    ctx.height = dimentions * SCALE
 
     ctx.fillStyle = 'black'
     ctx.fillRect(0, 0, dimentions * SCALE, dimentions * SCALE)
@@ -153,8 +167,27 @@ class AppComponent extends React.Component {
       ctx.fillRect(x * SCALE, y * SCALE, 1 * SCALE, 1 * SCALE)
     })
 
+    // let filteredData = Filters.filterCanvas( Filters.grayscale, ctx)
+    // let filteredData = Filters.filterCanvas( Filters.threshold, ctx, 100)
+    // ctx.putImageData(filteredData, 0, 0);
     return canvas.toDataURL();
 
+  }
+
+  processBlock (data) {
+    
+        var currBlockObj = web3.eth.getBlock(data)
+        .then( (block) => {
+            if(!block) return
+            block.pixels = this.convertBlockToRGB(block)
+            block.image = this.makeBlockImage( this.convertBlockToRGB(block) )
+            this.setState({blockArray: 
+              [...this.state.blockArray, block].sort((a,b)=> b.number - a.number), 
+              latestBlock: block})
+        })
+        .error(console.error)   
+    
+    this.setState({blockNumber: data})
   }
 
   makeBlockChainEvents() {
@@ -162,18 +195,13 @@ class AppComponent extends React.Component {
     if( !web3.eth ) return
     
     web3.eth.getBlockNumber()
-    .then((data) => {
-        if( this.state.blockNumber !== data){
-            var currBlockObj = web3.eth.getBlock(data)
-            .then( (block) => {
-                if(!block) return
-                block.pixels = this.convertBlockToRGB(block)
-                block.image = this.makeBlockImage( this.convertBlockToRGB(block) )
-                this.setState({blockArray: [...this.state.blockArray, block], latestBlock: block})
-            })
-            .error(console.error)            
+    .then( (data) => {
+      if( !this.state.blockNumber ){
+        for( let i = data - 20 ; i < data ; i++ ) {
+          this.processBlock(i)
         }
-        this.setState({blockNumber: data})
+      }
+      else if( this.state.blockNumber !== data) this.processBlock(data)
     })
     .error(console.error)    
   }
@@ -188,13 +216,8 @@ class AppComponent extends React.Component {
       <div className="blockContainer">
         { this.state.blockArray && 
           this.state.blockArray.map( 
-            // (block, i) => <BlockPixel block={block} index={i} key={i}/>
             (block, i) => 
-            <div className="block" key={i}>
-              <h1>{block.hash}</h1>
-              <img src={block.image} className="blockImage" />
-            </div>
-            
+              <Block block={block} index={i} key={i} />
             )}
       </div>
       </div>
