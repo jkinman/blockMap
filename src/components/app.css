@@ -40,3 +40,18 @@ body {
   border-width: 1px 0;
   background: #666;
 }
+.blockContainer{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.block{
+  font-size: 3px;
+  padding: 5px;
+  margin: 0;  
+}
+
+.blockImage{
+  width: 250px;
+  height: 250px;
+}
