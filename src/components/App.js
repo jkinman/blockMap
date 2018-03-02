@@ -87,10 +87,30 @@ class AppComponent extends React.Component {
     let bitmap = [];
     let i = 0;
     while( i < trimmedHash.length -6) {
-      bitmap.push( `#${trimmedHash.substring( i, i +6 )}`)
+      let colourString = `#${trimmedHash.substring( i, i +6 )}`
+      let rgb = this.hexToRgb(colourString)
+      let colour = this.roundColours( rgb)
+      bitmap.push( colour )
       i = i + 6
     }
     return bitmap
+  }
+
+  roundColours( colour, power = 10 ) {
+    colour.r = (parseInt(colour.r/power, power)+1)*power
+    colour.g = (parseInt(colour.g/power, power)+1)*power
+    colour.b = (parseInt(colour.b/power, power)+1)*power
+    return colour
+  }
+
+  hexToRgb(hex) {
+      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+
+      return result ? {
+          r: parseInt(result[1], 16) ,
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16)
+      } : null;
   }
 
   convertBlockToRGB( block ) {
@@ -129,13 +149,14 @@ class AppComponent extends React.Component {
         x++
       }
 
-      ctx.fillStyle = pixel
+      ctx.fillStyle = `rgb(${pixel.r}, ${pixel.g}, ${pixel.b} )`
       ctx.fillRect(x * SCALE, y * SCALE, 1 * SCALE, 1 * SCALE)
     })
 
     return canvas.toDataURL();
 
   }
+
   makeBlockChainEvents() {
     setTimeout( this.makeBlockChainEvents.bind(this), 3000 )
     if( !web3.eth ) return
@@ -146,7 +167,6 @@ class AppComponent extends React.Component {
             var currBlockObj = web3.eth.getBlock(data)
             .then( (block) => {
                 if(!block) return
-                // let pixels = this.convertBlockToRGB(block)
                 block.pixels = this.convertBlockToRGB(block)
                 block.image = this.makeBlockImage( this.convertBlockToRGB(block) )
                 this.setState({blockArray: [...this.state.blockArray, block], latestBlock: block})
@@ -154,11 +174,9 @@ class AppComponent extends React.Component {
             .error(console.error)            
         }
         this.setState({blockNumber: data})
+        console.log( this.state.blockArray)
     })
-    .error(console.error)
-
-    
-    
+    .error(console.error)    
   }
 
 
