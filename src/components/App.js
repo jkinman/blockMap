@@ -183,7 +183,8 @@ class AppComponent extends React.Component {
     
     return (
       <div className="index">
-      <h1>Block Chain Bitmap Visualization</h1>
+      <h1>Etherium Blockchain Bitmap Visualization</h1>
+      <h3>The transactions in every block are being converted to RGB values and rendered to a bitmap image</h3>
       <div className="blockContainer">
         { this.state.blockArray && 
           this.state.blockArray.map( 
