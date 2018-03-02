@@ -61,9 +61,12 @@ body {
 }
 
 .block img{
-  margin: 0;
+  margin: 15px;
+  margin-right: 70px;
   padding: 0;
   border-radius: 0;
   width: 200px;
   height: 200px;
+  filter: drop-shadow(-40px 40px 10px black);
+  transform: rotateX(60deg) rotateY(0deg) rotateZ(-45deg);
 }

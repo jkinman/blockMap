@@ -2,32 +2,11 @@ import React from 'react';
 import YeomanImage from './YeomanImage';
 import './app.css';
 import Web3 from 'web3';
+import BlockPixel from './BlockPixel';
 
 const ETHERIUM_ENDPOINT = 'https://mainnet.infura.io/mRUmnxLJW2t5fZP6WfDN';
 let web3;
-const SIZE = 10
-
-const BlockPixel = props => {
-  let lineLength = Math.round(Math.sqrt(props.block.bitmap.length))
-
-  return(
-    <div key={props.index}>
-    {props.block.bitmap.map( (pixel,y) => {
-        let pixelStyle = {
-          color:pixel,
-          backgroundColor:pixel,
-          width:SIZE,
-          height:SIZE,
-          position:'fixed',
-          top: Math.round(y / lineLength) * SIZE,
-          left: (y % lineLength) * SIZE,
-        };
-        return( <div style={pixelStyle} key={y}></div>)
-      })
-    }
-  </div>
-  )
-}
+const SIZE = 5
 
 const Block = props => {
 
@@ -42,15 +21,13 @@ const Block = props => {
 }
 
 const BlockSvgPixel = props => {
-  let lineLength = Math.round(Math.sqrt(props.block.bitmap.length))
 
   return(
     <div key={props.index}>
-    {props.block.bitmap.map( (pixel,y) => {
-      // debugger;
+    {props.block.pixels.map( (pixel,y) => {
         let pixelStyle = {
-          color:pixel,
-          backgroundColor:pixel,
+          color:`rgb(${pixel.r}, ${pixel.g}, ${pixel.b} )`,
+          backgroundColor:`rgb(${pixel.r}, ${pixel.g}, ${pixel.b} )`,
           width:SIZE,
           height:SIZE,
           position:'fixed',
@@ -175,19 +152,18 @@ class AppComponent extends React.Component {
   }
 
   processBlock (data) {
-    
-        var currBlockObj = web3.eth.getBlock(data)
-        .then( (block) => {
-            if(!block) return
-            block.pixels = this.convertBlockToRGB(block)
-            block.image = this.makeBlockImage( this.convertBlockToRGB(block) )
-            this.setState({blockArray: 
-              [...this.state.blockArray, block].sort((a,b)=> b.number - a.number), 
-              latestBlock: block})
-        })
-        .error(console.error)   
-    
     this.setState({blockNumber: data})
+    
+    var currBlockObj = web3.eth.getBlock(data)
+    .then( (block) => {
+        if(!block) return
+        block.pixels = this.convertBlockToRGB(block)
+        block.image = this.makeBlockImage( this.convertBlockToRGB(block) )
+        this.setState({blockArray: 
+          [...this.state.blockArray, block].sort((a,b)=> b.number - a.number), 
+          latestBlock: block})
+    })
+    .error(console.error)       
   }
 
   makeBlockChainEvents() {
@@ -213,11 +189,18 @@ class AppComponent extends React.Component {
       <div className="index">
       <h1>Etherium Blockchain Bitmap Visualization</h1>
       <h3>The transactions in every block are being converted to RGB values and rendered to a bitmap image</h3>
+      <p ref="data"></p>
       <div className="blockContainer">
         { this.state.blockArray && 
           this.state.blockArray.map( 
-            (block, i) => 
-              <Block block={block} index={i} key={i} />
+            (block, i) => {
+              return (
+              <div key={i}>
+                <Block block={block} index={i} key={i+'block'} />
+                {/* <BlockPixel block={block} index={i} key={i+'blockpixel'} /> */}
+              </div>
+              )
+            }
             )}
       </div>
       </div>
