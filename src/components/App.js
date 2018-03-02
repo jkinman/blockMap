@@ -142,11 +142,9 @@ class AppComponent extends React.Component {
     
     web3.eth.getBlockNumber()
     .then((data) => {
-        console.log('getBlockNumber ' + data);
         if( this.state.blockNumber !== data){
             var currBlockObj = web3.eth.getBlock(data)
             .then( (block) => {
-              console.log(this.state.blockArray)
                 if(!block) return
                 // let pixels = this.convertBlockToRGB(block)
                 block.pixels = this.convertBlockToRGB(block)
@@ -167,6 +165,8 @@ class AppComponent extends React.Component {
   render() {
     
     return (
+      <div className="index">
+      <h1>Block Chain Bitmap Visualization</h1>
       <div className="blockContainer">
         { this.state.blockArray && 
           this.state.blockArray.map( 
@@ -178,6 +178,7 @@ class AppComponent extends React.Component {
             </div>
             
             )}
+      </div>
       </div>
     );
   }

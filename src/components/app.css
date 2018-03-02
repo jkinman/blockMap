@@ -8,7 +8,7 @@ body {
 }
 
 .index {
-  width: 40%;
+  width: 90%;
   margin: 50px auto;
   padding: 10px;
   background: #333;
@@ -40,6 +40,7 @@ body {
   border-width: 1px 0;
   background: #666;
 }
+
 .blockContainer{
   display: flex;
   flex-wrap: wrap;
@@ -51,7 +52,10 @@ body {
   margin: 0;  
 }
 
-.blockImage{
+.block img{
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
   width: 250px;
   height: 250px;
 }
