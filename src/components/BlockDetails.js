@@ -31,12 +31,15 @@ class BlockDetails extends React.Component {
       <div>
         { showPanel &&
         <div className="blockDetails">
-          <h1>Details</h1>
+        <h1>Details</h1>
+        <h2>block #{this.state.block.number}</h2>
+        <img src={this.state.block.image} className="blockImageFlat" />
         <h2>difficulty:{this.state.block.difficulty}</h2>
         <h2>extraData:{this.state.block.extraData}</h2>
         <h2>nonce:{this.state.block.nonce}</h2>
         <h2>miner:{this.state.block.miner}</h2>
         <h2>difficulty:{this.state.block.difficulty}</h2>
+        <h2>size:{this.state.block.size}</h2>
         <h2>transactions:</h2>
         <ul>
           {this.state.block.transactions.map((transaction) => 
