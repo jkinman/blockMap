@@ -1,8 +1,10 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import YeomanImage from './YeomanImage';
-import './app.css';
+import './app.scss';
 import Web3 from 'web3';
 import BlockPixel from './BlockPixel';
+import BlockDetails from './BlockDetails';
 
 const ETHERIUM_ENDPOINT = 'https://mainnet.infura.io/mRUmnxLJW2t5fZP6WfDN';
 let web3;
@@ -182,27 +184,33 @@ class AppComponent extends React.Component {
     .error(console.error)    
   }
 
+  showDetails( block ) {
+
+    this.refs.blockDetails.open( block )
+    // ReactDOM.render( <BlockDetails block={block} />, this.refs.blockDetails )
+  }
 
   render() {
     
     return (
       <div className="index">
-      <h1>Etherium Blockchain Bitmap Visualization</h1>
-      <h3>The transactions in every block are being converted to RGB values and rendered to a bitmap image</h3>
-      <p ref="data"></p>
-      <div className="blockContainer">
-        { this.state.blockArray && 
-          this.state.blockArray.map( 
-            (block, i) => {
-              return (
-              <div key={i}>
-                <Block block={block} index={i} key={i+'block'} />
-                {/* <BlockPixel block={block} index={i} key={i+'blockpixel'} /> */}
-              </div>
-              )
-            }
+        <h1>Etherium Blockchain Bitmap Visualization</h1>
+        <h3>The transactions in every block are being converted to RGB values and rendered to a bitmap image</h3>
+        <p ref="data"></p>
+        <div className="blockContainer">
+          { this.state.blockArray && 
+            this.state.blockArray.map( 
+              (block, i) => {
+                return (
+                <div key={i} onClick={ ()=>this.showDetails(block) }>
+                  <Block block={block} index={i} key={i+'block'} />
+                </div>
+                )
+              }
             )}
-      </div>
+        </div>
+          <BlockDetails ref="blockDetails" />
+        {/* <div ref="blockDetails" ></div> */}
       </div>
     );
   }
