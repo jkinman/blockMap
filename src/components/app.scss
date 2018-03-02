@@ -65,6 +65,7 @@ body {
 }
 
 .block img{
+
   margin: 15px;
   margin-right: 70px;
   padding: 0;
@@ -73,6 +74,13 @@ body {
   height: 200px;
   filter: drop-shadow(-40px 40px 10px black);
   transform: rotateX(60deg) rotateY(0deg) rotateZ(-45deg);
+  -webkit-transition: 0.5s ease-in-out;
+    -moz-transition: 0.5s ease-in-out;
+    -o-transition: 0.5s ease-in-out;
+    transition: 0.5s ease-in-out;
+  &.tilt {
+    transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+  }
 }
 
 .blockDetails{

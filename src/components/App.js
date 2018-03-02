@@ -16,7 +16,11 @@ const Block = props => {
     <div className="block" key={props.index}>
       <h1>{`Block Number: ${props.block.number}`}</h1>
       <h2>{props.block.hash}</h2>
-      <img src={props.block.image} className="blockImage" alt={`Block Number: ${props.block.number}`}/>
+      <p>{props.tilt}</p>
+      <img 
+        src={props.block.image} 
+        className={ props.tilt ? 'blockImage tilt' : 'blockImage'}
+        alt={`Block Number: ${props.block.number}`}/>
     </div>
     )
 
@@ -201,8 +205,14 @@ class AppComponent extends React.Component {
             this.state.blockArray.map( 
               (block, i) => {
                 return (
-                <div key={i} onClick={ ()=>this.showDetails(block) }>
-                  <Block block={block} index={i} key={i+'block'} />
+                <div key={i} 
+                onClick={ ()=>this.showDetails(block) }
+                onMouseEnter={ ()=> {
+                  console.log( `hover on ${i}`)
+                  this.setState({ hoverId : i})
+                } }
+                >
+                  <Block block={block} tilt={this.state.hoverId == i} index={i} key={i+'block'} />
                 </div>
                 )
               }
