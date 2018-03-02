@@ -185,9 +185,7 @@ class AppComponent extends React.Component {
   }
 
   showDetails( block ) {
-
     this.refs.blockDetails.open( block )
-    // ReactDOM.render( <BlockDetails block={block} />, this.refs.blockDetails )
   }
 
   render() {
@@ -195,7 +193,7 @@ class AppComponent extends React.Component {
     return (
       <div className="index">
         <h1>Etherium Blockchain Bitmap Visualization</h1>
-        <h3>The transactions in every block are being contatenated and converted to RGB values and the result is being rendered to a bitmap.</h3>
+        <h3>The transactions in every block are being concatenated and converted to RGB values and the result is being rendered to a bitmap.</h3>
         <h3>Click the blocks to inspect</h3>
         <p ref="data"></p>
         <div className="blockContainer">
