@@ -9,7 +9,7 @@
  */
 /* Populated by react-webpack-redux:reducer */
 import { combineReducers } from 'redux';
-
-const reducers = {};
+import ethereum from '../reducers/ethereum.js';
+const reducers = { ethereum };
 const combined = combineReducers(reducers);
 module.exports = combined;

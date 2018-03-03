@@ -10,13 +10,13 @@ import React, {
 } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {} from '../actions/';
+import { addNewBlock } from '../actions/';
 import Main from '../components/App';
 /* Populated by react-webpack-redux:reducer */
 class App extends Component {
   render() {
-    const { actions } = this.props;
-    return <Main actions={actions} />;
+    const {actions, ethereum} = this.props;
+    return <Main actions={actions} ethereum={ethereum}/>;
   }
 }
 /* Populated by react-webpack-redux:reducer
@@ -25,16 +25,18 @@ class App extends Component {
  *       adjust it here.
  */
 App.propTypes = {
-  actions: PropTypes.shape({})
+  actions: PropTypes.shape({ addNewBlock: PropTypes.func.isRequired }),
+  ethereum: PropTypes.shape({})
 };
-function mapStateToProps(state) { // eslint-disable-line no-unused-vars
+function mapStateToProps(state) {
+  // eslint-disable-line no-unused-vars
   /* Populated by react-webpack-redux:reducer */
-  const props = {};
+  const props = { ethereum: state.ethereum };
   return props;
 }
 function mapDispatchToProps(dispatch) {
   /* Populated by react-webpack-redux:action */
-  const actions = {};
+  const actions = { addNewBlock };
   const actionMap = { actions: bindActionCreators(actions, dispatch) };
   return actionMap;
 }

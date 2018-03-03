@@ -1,6 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import YeomanImage from './YeomanImage';
 import './app.scss';
 import Web3 from 'web3';
 import BlockPixel from './BlockPixel';
@@ -14,16 +12,14 @@ const Block = props => {
 
   return(
     <div className="block" key={props.index}>
-      <h1>{`Block Number: ${props.block.number}`}</h1>
-      <h2>{props.block.hash}</h2>
-      <p>{props.tilt}</p>
+       <h1>{`Block # ${props.block.number}`}</h1>
+      {/*<h2>{props.block.hash}</h2> */}
       <img 
         src={props.block.image} 
         className={ props.tilt ? 'blockImage tilt' : 'blockImage'}
         alt={`Block Number: ${props.block.number}`}/>
     </div>
     )
-
 }
 
 const BlockSvgPixel = props => {
@@ -61,8 +57,7 @@ class AppComponent extends React.Component {
       blockNumber:0,
       blockArray:[],
   }
-  // web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
-
+    // web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
     // web3 = new Web3(new Web3.providers.HttpProvider('HTTP://127.0.0.1:7545'));
     web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/mRUmnxLJW2t5fZP6WfDN'));
     this.makeBlockChainEvents()
@@ -157,14 +152,29 @@ class AppComponent extends React.Component {
 
   }
 
+  loadTransactions( block ) {
+    let retVal = []
+    block.transactions.map( (transaction) => {
+      web3.eth.getTransaction(transaction, (err, data) => {
+        if( err ){
+          console.error( err )
+          return
+        }
+        retVal.push( data )
+      })
+    })
+    return retVal
+  }
+
   processBlock (data) {
     this.setState({blockNumber: data})
     
     var currBlockObj = web3.eth.getBlock(data)
     .then( (block) => {
         if(!block) return
+        // let transactionsFleshedOut = [...transactionsFleshedOut, this.loadTransactions(block)]
         block.pixels = this.convertBlockToRGB(block)
-        block.image = this.makeBlockImage( this.convertBlockToRGB(block) )
+        block.image = this.makeBlockImage( block.pixels )
         this.setState({blockArray: 
           [...this.state.blockArray, block].sort((a,b)=> b.number - a.number), 
           latestBlock: block})
