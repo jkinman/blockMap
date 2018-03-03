@@ -1,11 +1,9 @@
 import React from 'react';
 import './app.scss';
-import Web3 from 'web3';
 import BlockPixel from './BlockPixel';
 import BlockDetails from './BlockDetails';
+import EthereumSync from '../sources/EthereumSync';
 
-const ETHERIUM_ENDPOINT = 'https://mainnet.infura.io/mRUmnxLJW2t5fZP6WfDN';
-let web3;
 const SIZE = 5
 
 const Block = props => {
@@ -46,156 +44,13 @@ const BlockSvgPixel = props => {
 class AppComponent extends React.Component {
   constructor( props, context) {
     super( props, context );
-
-    // const MyContract = window.web3.eth.contract();
-
-    // this.state = {
-    //   ContractInstance: MyContract.at('')
-    // }
+    this.ethereumSync = new EthereumSync( this.props.actions.addNewBlock )
     this.state = {
       latestBlock: {},
       blockNumber:0,
       blockArray:[],
   }
-    // web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
-    // web3 = new Web3(new Web3.providers.HttpProvider('HTTP://127.0.0.1:7545'));
-    web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/mRUmnxLJW2t5fZP6WfDN'));
-    this.makeBlockChainEvents()
 
-  }
-
-  makePixelsFromHexString( hash ){
-
-    let trimmedHash
-    if( hash.indexOf('0x') == 0) {
-      trimmedHash = hash.substring( 2, hash.length)
-    }
-    else {
-      trimmedHash = hash;
-    }
-    
-    let bitmap = [];
-    let i = 0;
-    while( i < trimmedHash.length -6) {
-      let colourString = `#${trimmedHash.substring( i, i +6 )}`
-      let rgb = this.hexToRgb(colourString)
-      let colour = this.roundColours( rgb)
-      bitmap.push( colour )
-      i = i + 6
-    }
-    return bitmap
-  }
-
-  roundColours( colour, power = 10 ) {
-    colour.r = (parseInt(colour.r/power, power)+1)*power
-    colour.g = (parseInt(colour.g/power, power)+1)*power
-    colour.b = (parseInt(colour.b/power, power)+1)*power
-    return colour
-  }
-
-  hexToRgb(hex) {
-      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-
-      return result ? {
-          r: parseInt(result[1], 16) ,
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16)
-      } : null;
-  }
-
-  convertBlockToRGB( block ) {
-
-    let bitmap = [];
-    block.transactions.map( (transaction) => {
-      let pixelArray = this.makePixelsFromHexString(transaction);
-      bitmap = [...bitmap, ...pixelArray]
-    })
-
-    return bitmap
-  }
-
-  makeBlockImage( pixels ){
-    const SCALE = 20
-    let dimentions = Math.round(Math.sqrt(pixels.length))
-    let canvas = document.createElement("canvas")
-    canvas.width = dimentions * SCALE
-    canvas.height = dimentions * SCALE
-    let ctx = canvas.getContext('2d');
-    ctx.width = dimentions * SCALE
-    ctx.height = dimentions * SCALE
-
-    ctx.fillStyle = 'black'
-    ctx.fillRect(0, 0, dimentions * SCALE, dimentions * SCALE)
-    
-    let x = 0
-    let y = 0
-
-    pixels.map((pixel, i) => {
-      if( x == dimentions && y == dimentions ) return;
-
-      if( x > dimentions ) {
-        x = 0
-        y++
-      }
-      else{
-        x++
-      }
-
-      ctx.fillStyle = `rgb(${pixel.r}, ${pixel.g}, ${pixel.b} )`
-      ctx.fillRect(x * SCALE, y * SCALE, 1 * SCALE, 1 * SCALE)
-    })
-
-    // let filteredData = Filters.filterCanvas( Filters.grayscale, ctx)
-    // let filteredData = Filters.filterCanvas( Filters.threshold, ctx, 100)
-    // ctx.putImageData(filteredData, 0, 0);
-    return canvas.toDataURL();
-
-  }
-
-  loadTransactions( block ) {
-    let retVal = []
-    block.transactions.map( (transaction) => {
-      web3.eth.getTransaction(transaction, (err, data) => {
-        if( err ){
-          console.error( err )
-          return
-        }
-        retVal.push( data )
-      })
-    })
-    return retVal
-  }
-
-  processBlock (data) {
-    this.setState({blockNumber: data})
-    
-    var currBlockObj = web3.eth.getBlock(data)
-    .then( (block) => {
-        if(!block) return
-        // let transactionsFleshedOut = [...transactionsFleshedOut, this.loadTransactions(block)]
-        block.pixels = this.convertBlockToRGB(block)
-        block.image = this.makeBlockImage( block.pixels )
-        this.setState({blockArray: 
-          [...this.state.blockArray, block].sort((a,b)=> b.number - a.number), 
-          latestBlock: block})
-    })
-    .error(console.error)       
-  }
-
-  makeBlockChainEvents() {
-    setTimeout( this.makeBlockChainEvents.bind(this), 3000 )
-    if( !web3.eth ) return
-    
-    web3.eth.getBlockNumber()
-    .then( (data) => {
-      if( !this.state.blockNumber ){
-        for( let i = data - 20 ; i < data ; i++ ) {
-          this.processBlock(i)
-        }
-      }
-      else if( this.state.blockNumber !== data) this.processBlock(data)
-    })
-    .error(console.error)    
   }
 
   showDetails( block ) {
@@ -211,8 +66,8 @@ class AppComponent extends React.Component {
         <h3>Click the blocks to inspect</h3>
         <p ref="data"></p>
         <div className="blockContainer">
-          { this.state.blockArray && 
-            this.state.blockArray.map( 
+          { this.props.ethereum && 
+            this.props.ethereum.blockArray.map( 
               (block, i) => {
                 return (
                 <div key={i} 
