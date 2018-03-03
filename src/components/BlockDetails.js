@@ -18,7 +18,6 @@ class BlockDetails extends React.Component {
 
   open( block ) {
     this.setState( {visible: true, block})
-    console.log(block)
   }
 
   close() {

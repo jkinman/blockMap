@@ -133,8 +133,8 @@ class EthereumSync {
         var currBlockObj = this.web3.eth.getBlock(data)
         .then( (block) => {
             if(!block) return
-            block.pixels = this.convertBlockToRGB(block)
-            block.image = this.makeBlockImage( block.pixels )
+            let pixels = this.convertBlockToRGB(block)
+            block.image = this.makeBlockImage( pixels )
             this.addBlock( block )
         })
         .error(console.error)       
