@@ -8,7 +8,7 @@ class BlockDetails extends React.Component {
   constructor(props,c) {
 
     super(props,c)
-    this.state = {visible:true}
+    this.state = {visible:false}
 
   }
 

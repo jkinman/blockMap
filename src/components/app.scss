@@ -31,7 +31,6 @@ body {
 .index img {
   margin: 40px auto;
   border-radius: 4px;
-  background: #fff;
   display: block;
 }
 
@@ -48,7 +47,9 @@ body {
   display: flex;
   flex-wrap: wrap;
 }
-
+.primer{
+  width: 60vw;
+}
 .block{
   font-size: 12px;
   padding: 5px;
@@ -83,6 +84,18 @@ body {
   }
 }
 
+.blockEnhanced {
+  filter: drop-shadow(-40px 40px 10px black);
+  // transform: rotateX(60deg) rotateY(0deg) rotateZ(-45deg);
+  // -webkit-transition: 0.5s ease-in-out;
+  //   -moz-transition: 0.5s ease-in-out;
+  //   -o-transition: 0.5s ease-in-out;
+  //   transition: 0.5s ease-in-out;
+  // &.tilt {
+  //   transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+  // }
+  
+}
 .blockDetails{
   position: fixed;
   top: 10vh;
@@ -104,4 +117,36 @@ body {
     width: 200px;
     height: 200px;  
   }
+}
+
+
+.blockEnhanced {
+  padding: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  width: 300px;
+  
+
+  .TransactionBlob {
+    border: 1px solid #FFF;
+    display: flex;
+    flex-wrap: wrap;
+    width: 20px;
+    padding: 2px;
+    .DomPixel {
+      min-width: 5px;
+      min-height: 5px;
+    }
+
+  }
+}
+
+.transtooltip{
+  min-height: 30px;
+  min-width: 300px;
+  background-color: #FFF;
+  color: #000;
+  position: absolute;
+  display: none;
+  z-index: 100;
 }

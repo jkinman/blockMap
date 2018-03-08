@@ -15,7 +15,7 @@ class EthereumSync {
         this.web3.eth.getBlockNumber()
         .then( (data) => {
           if( !this.blockNumber ){
-            for( let i = data - 20 ; i < data ; i++ ) {
+            for( let i = data - 3 ; i < data ; i++ ) {
               this.processBlock(i)
             }
           }
@@ -34,14 +34,13 @@ class EthereumSync {
         else {
           trimmedHash = hash;
         }
-        
+
         let bitmap = [];
         let i = 0;
         while( i < trimmedHash.length -6) {
           let colourString = `#${trimmedHash.substring( i, i +6 )}`
           let rgb = this.hexToRgb(colourString)
-          let colour = this.roundColours( rgb)
-          bitmap.push( colour )
+          bitmap.push( rgb )
           i = i + 6
         }
         return bitmap
@@ -64,14 +63,17 @@ class EthereumSync {
           } : null;
       }
     
-      convertBlockToRGB( block ) {
+      convertBlockToRGB( block, returnTrans=false ) {
     
         let bitmap = [];
+        let transactionArray = []
         block.transactions.map( (transaction) => {
           let pixelArray = this.makePixelsFromHexString(transaction);
           bitmap = [...bitmap, ...pixelArray]
+          transactionArray.push( pixelArray )
         })
-    
+        
+        if(returnTrans) return transactionArray
         return bitmap
       }
     
@@ -126,6 +128,10 @@ class EthereumSync {
         })
         return retVal
       }
+
+      loadTransaction( transaction, outVal ) {
+        return this.web3.eth.getTransaction(transaction)
+      }
     
       processBlock (data) {
         this.blockNumber = data
@@ -133,8 +139,10 @@ class EthereumSync {
         var currBlockObj = this.web3.eth.getBlock(data)
         .then( (block) => {
             if(!block) return
-            let pixels = this.convertBlockToRGB(block)
-            block.image = this.makeBlockImage( pixels )
+            // let pixels = this.convertBlockToRGB(block)
+            // block.image = this.makeBlockImage( pixels )
+            block.pixelArray = this.convertBlockToRGB(block, true)
+            block.loadTransaction = this.loadTransaction.bind(this)
             this.addBlock( block )
         })
         .error(console.error)       

@@ -15,6 +15,9 @@ function reducer(state = initialState, action) {
     case ADD_NEW_BLOCK: {
       nextState.blockArray.push( action.parameter)
       nextState.blockArray = nextState.blockArray.sort((a,b)=> b.number - a.number)
+      while( nextState.blockArray.length > 20 ) {
+        nextState.blockArray.pop()
+      }
       nextState.latestBlock = action.parameter
       return nextState;
     }
